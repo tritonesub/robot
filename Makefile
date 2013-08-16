@@ -7,15 +7,15 @@ BIN_PATH = ./bin
 OBJ = main.o robot.o speak.o envcanada.o
 OBJS = $(OBJ:%.o=$(BUILD_PATH)/%.o)
 
-.PHONY: clean
+.PHONY: clean 
 
 all: $(TARGET) 
 
-$(TARGET): $(OBJ) 
+$(TARGET): $(OBJS) 
 	$(CC) -lespeak -lcurl -l bcm2835 -o $(BIN_PATH)/$@ $(OBJS) 
 
-%.o: %.cpp 
-	$(CC) $(CFLAGS) $(INC) $< -o $(BUILD_PATH)/$@
+$(BUILD_PATH)/%.o: %.cpp 
+	$(CC) $(CFLAGS) $(INC) $< -o $@
 
 clean:
 	rm -rf $(BUILD_PATH)/*o $(BIN_PATH)/$(TARGET) 
