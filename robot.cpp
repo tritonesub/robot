@@ -20,7 +20,6 @@ Robot::Robot():halt(true) {
 }
 
 Robot::~Robot() {
-
 }
 
 //public methods
