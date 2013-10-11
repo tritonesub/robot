@@ -4,7 +4,7 @@ INC= -I/usr/include/espeak -Iinc
 TARGET = robot
 BUILD_PATH = ./build
 BIN_PATH = ./bin
-OBJ = main.o robot.o speak.o envcanada.o
+OBJ = main.o robot.o speak.o envcanada.o pwm.o rpi_io.o
 OBJS = $(OBJ:%.o=$(BUILD_PATH)/%.o)
 
 .PHONY: clean 
@@ -12,7 +12,7 @@ OBJS = $(OBJ:%.o=$(BUILD_PATH)/%.o)
 all: $(TARGET) 
 
 $(TARGET): $(OBJS) 
-	$(CC) -lespeak -lcurl -l bcm2835 -o $(BIN_PATH)/$@ $(OBJS) 
+	$(CC) -o $(BIN_PATH)/$@ $(OBJS) -lespeak -lcurl -lbcm2835 
 
 $(BUILD_PATH)/%.o: %.cpp 
 	$(CC) $(CFLAGS) $(INC) $< -o $@
