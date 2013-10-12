@@ -38,22 +38,28 @@ Rpi_IO::~Rpi_IO() {
 
 //public static methods
 void Rpi_IO::i2c_write(uint address, const vector<uint8_t> &writeBuf) {
-	//i2c_mutex.lock();
+	i2c_mutex.lock();
 
 
-	//i2c_mutex.unlock();
+	i2c_mutex.unlock();
+}
+
+static void i2c_write(uint address, const uint8_t value) {
+	i2c_mutex.lock();
+
+	i2c_mutex.unlock();
 }
 
 void Rpi_IO::i2c_read(uint address, vector<uint8_t> &readBuf, uint size) {
-	//i2c_mutex.lock();
+	i2c_mutex.lock();
 
-	//i2c_mutex.unlock();
+	i2c_mutex.unlock();
 }
 
 void Rpi_IO::spi_transfer(uint address, const vector<uint8_t> &writeBuf, vector<uint8_t>& readBuf) {
-	//spi_mutex.lock();
+	spi_mutex.lock();
 
-	//spi_mutex.unlock();
+	spi_mutex.unlock();
 }
 
 uint8_t Rpi_IO::read(uint8_t pin) {

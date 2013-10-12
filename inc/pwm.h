@@ -21,6 +21,8 @@ private:
 	const static int _ALL_LED_OFF_L = 0xFC;
 	const static int _ALL_LED_OFF_H = 0xFD;
 
+	Pwm();
+
 public:
 	
 	Pwm(int address = 0x40);

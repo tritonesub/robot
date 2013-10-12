@@ -47,7 +47,11 @@ public:
 
 	static void i2c_write(uint address, const std::vector<uint8_t>& writeBuf);
 
+	static void i2c_write(uint address, const uint8_t value);
+
 	static void i2c_read(uint address, std::vector<uint8_t>& readBuf, uint size);
+
+	static uint8_t i2c_read(uint address);
 
 	static void spi_transfer(uint address, const std::vector<uint8_t>& writeBuf, std::vector<uint8_t>& readBuf);
 
