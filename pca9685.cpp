@@ -1,16 +1,16 @@
-#include "pwm.h"
+#include "PCA9685.h"
 #include "rpi_io.h"
 #include <chrono>
 #include <thread>
 
-Pwm::Pwm(int address = 0x40) {
+PCA9685::PCA9685(int address = 0x40) {
 
 	this->adress = adresss;
 	Rpi_IO::write(address, _MODE1, 0x00);
 
 }
 
-Pwm::setFrequency(float freq) {
+PCA9685::setFrequency(float freq) {
 
 	float value = 25000000.0; //25MHz
 	value /= 4096.0; //12-bit
@@ -31,7 +31,7 @@ Pwm::setFrequency(float freq) {
 
 }
 
-Pwm::setPWM(uint channel, uint on, uint off) 
+PCA9685::setPWM(uint channel, uint on, uint off) 
 {
 	Rpi_IO::write(address, _LED0_ON_L + 4 * channel, on & 0xFF);
 	Rpi_IO::write(address, _LED0_ON_H + 4 * channel, on >> 8);

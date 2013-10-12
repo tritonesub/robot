@@ -1,9 +1,9 @@
-#ifndef PWM_H
-#define PWM_H
+#ifndef PCA9685_H
+#define PCA9685_H
 
 
 
-class Pwm {
+class PCA9685 {
 	//registers
 private:
 	
@@ -21,11 +21,16 @@ private:
 	const static int _ALL_LED_OFF_L = 0xFC;
 	const static int _ALL_LED_OFF_H = 0xFD;
 
-	Pwm();
+	int address;
+
+	PCA9685();
 
 public:
 	
-	Pwm(int address = 0x40);
+	PCA9685(int address = 0x40);
+
+	setFrequency(float freq);
+	setPWM(uint channel, uint on, uint off);
 
 };
 
