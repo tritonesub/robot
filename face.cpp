@@ -1,1 +1,11 @@
-#include Face.h
+#include "face.h"
+
+Face::Face() 
+{
+
+}
+
+Face::~Face()
+{
+
+}
