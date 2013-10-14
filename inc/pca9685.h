@@ -22,14 +22,17 @@ private:
 	const static int _ALL_LED_OFF_H = 0xFD;
 
 	int address;
+	int frequency;
 
 	PCA9685();
 
 public:
+	const static uint resolution = 4096;
 	
 	PCA9685(int address = 0x40);
 
-	setFrequency(float freq);
+
+	setFrequency(int freq);
 	setPWM(uint channel, uint on, uint off);
 
 };

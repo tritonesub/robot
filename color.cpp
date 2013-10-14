@@ -2,48 +2,39 @@
 
 Color::Color() {}
 
-Color::Color(uint R, uint G, uint B) 
+Color::Color(uint8_t R, uint8_t G, uint8_t B) 
 {
 	Red(R);
 	Green(G);
 	Blue(B);
 }
 
-void Color::Red(uint R) 
+void Color::Red(uint8_t R) 
 {
-	if(R <= 255)
-		_R = R;
-	else 
-		throw "Invalid parameter value R must be < 255";
+	_R = R;
 }
 
-uint Color::Red() 
+uint8_t Color::Red() 
 {
 	return _R;
 }
 
-void Color::Green(uint G)
+void Color::Green(uint8_t G)
 {
-	if(G <= 255)
-		_G = G;
-	else 
-		throw "Invalid parameter value G must be < 255";
+	_G = G;
 }
 
-uint Color::Green()
+uint8_t Color::Green()
 {
 	return _G;
 }
 
-void Color::Blue(uint B)
+void Color::Blue(uint8_t B)
 {
-	if(B <= 255)
-		_B = B;
-	else
-		throw "Invalid parameter value. B must be < 255";
+	_B = B;
 }
 
-uint Color::Blue()
+uint8_t Color::Blue()
 {
 	return _B;
 }

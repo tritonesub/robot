@@ -4,7 +4,7 @@ INC= -I/usr/include/espeak -Iinc
 TARGET = robot
 BUILD_PATH = ./build
 BIN_PATH = ./bin
-OBJ = main.o robot.o speak.o envcanada.o pwm.o rpi_io.o face.o
+OBJ = main.o robot.o speak.o envcanada.o pwm.o rpi_io.o face.o pwmrgbled.o
 OBJS = $(OBJ:%.o=$(BUILD_PATH)/%.o)
 
 .PHONY: clean 

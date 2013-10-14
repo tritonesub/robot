@@ -10,11 +10,13 @@ PCA9685::PCA9685(int address = 0x40) {
 
 }
 
-PCA9685::setFrequency(float freq) {
+PCA9685::setFrequency(int freq) {
+
+	frequency = freq;
 
 	float value = 25000000.0; //25MHz
 	value /= 4096.0; //12-bit
-	value /= freq;
+	value /= frequency;
 	value -= 1.0;
 
 	value = floor(value + 0.5);
