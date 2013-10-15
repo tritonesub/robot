@@ -1,16 +1,20 @@
-#include "PCA9685.h"
+#include "pca9685.h"
 #include "rpi_io.h"
+#include <math.h>
 #include <chrono>
 #include <thread>
+#include <vector>
 
-PCA9685::PCA9685(int address = 0x40) {
+using std::vector;
 
-	this->adress = adresss;
-	Rpi_IO::write(address, _MODE1, 0x00);
+PCA9685::PCA9685(uint8_t address) {
+
+	this->address = address;
+	Rpi_IO::i2c_write(address, static_cast<uint8_t>(_MODE1), static_cast<uint8_t>(0x00));
 
 }
 
-PCA9685::setFrequency(int freq) {
+void PCA9685::setFrequency(int freq) {
 
 	frequency = freq;
 
@@ -23,20 +27,33 @@ PCA9685::setFrequency(int freq) {
 	uint8_t oldmode = Rpi_IO::read(address);
 	uint8_t newmode = (oldmode & 0x7F) | 0x10;
 	
-	Rpi_IO::write(address, _MODE1, newmode);
-	Rpi_IO::write(address, _PRESCALE, static_cast<uint8_t>(floor(value)));
-	Rpi_IO::write(address, _MODE1, newmode);
+	Rpi_IO::i2c_write(static_cast<uint8_t>(address), static_cast<uint8_t>(_MODE1), newmode);
+	Rpi_IO::i2c_write(static_cast<uint8_t>(address), static_cast<uint8_t>(_PRESCALE), static_cast<uint8_t>(floor(value)));
+	Rpi_IO::i2c_write(static_cast<uint8_t>(address), static_cast<uint8_t>(_MODE1), newmode);
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
-	Rpi_IO::write(address, _MODE1, oldmode | 0x80);
+	Rpi_IO::i2c_write(static_cast<uint8_t>(address), static_cast<uint8_t>(_MODE1), oldmode | 0x80);
 
 }
 
-PCA9685::setPWM(uint channel, uint on, uint off) 
+void PCA9685::setPWM(unsigned int channel, unsigned int on, unsigned int off) 
 {
-	Rpi_IO::write(address, _LED0_ON_L + 4 * channel, on & 0xFF);
-	Rpi_IO::write(address, _LED0_ON_H + 4 * channel, on >> 8);
-	Rpi_IO::write(address, _LED0_OFF_L + 4 * channel, off & 0xFF);
-	Rpi_IO::write(address, _LED0_OFF_H + 4 * channel, off >> 8);
+    //send vector or array 	
+	vector<uint8_t> val(2);
+	val.at(0) = _LED0_ON_L + 4 * channel;
+	val.at(1) = on & 0xFF;
+	Rpi_IO::i2c_write(address, val);
+
+	val.at(0) = _LED0_ON_H + 4 * channel;
+	val.at(1) = on >> 8;
+	Rpi_IO::i2c_write(address, val);
+
+	val.at(0) = _LED0_OFF_L + 4 * channel;
+	val.at(1) = off & 0xFF;
+	Rpi_IO::i2c_write(address, val);
+
+	val.at(0) = _LED0_OFF_H + 4 * channel;
+	val.at(1) = off >> 8;
+	Rpi_IO::i2c_write(address, val);
 }

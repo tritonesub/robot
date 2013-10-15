@@ -1,8 +1,12 @@
 #include "rpi_io.h"
 #include <bcm2835.h>
 #include <vector>
+#include <mutex>
 
 using std::vector;
+
+std::mutex i2c_mutex;
+std::mutex spi_mutex;
 
 //private Rpi_IO constructor (singleton)
 Rpi_IO::Rpi_IO() {
@@ -37,26 +41,41 @@ Rpi_IO::~Rpi_IO() {
 
 
 //public static methods
-void Rpi_IO::i2c_write(uint address, const vector<uint8_t> &writeBuf) {
-	i2c_mutex.lock();
+void Rpi_IO::i2c_write(uint8_t address, const uint8_t reg, uint8_t data)
+{
+	vector<uint8_t> buf(2);
+	buf.at(0) = reg;
+	buf.at(1) = data;
+	i2c_write(address, buf);
+}
 
+void Rpi_IO::i2c_write(uint8_t address, const uint8_t reg, std::vector<uint8_t>& writeBuf)
+{
+	writeBuf.insert(writeBuf.begin(), reg);
+	i2c_write(address, writeBuf);
+}
+
+void Rpi_IO::i2c_write(uint8_t address, const vector<uint8_t> &writeBuf) {
+	i2c_mutex.lock();
+	bcm2835_i2c_setSlaveAddress(address);
+	bcm2835_i2c_write(reinterpret_cast<const char *>(&writeBuf[0]), writeBuf.size());
+	i2c_mutex.unlock();
+}
+
+void Rpi_IO::i2c_write(uint8_t address, const uint8_t value) {
+	i2c_mutex.lock();
+	bcm2835_i2c_setSlaveAddress(address);
+	bcm2835_i2c_write(reinterpret_cast<const char *>(&value), 1);
+	i2c_mutex.unlock();
+}
+
+void Rpi_IO::i2c_read(uint8_t address, vector<uint8_t> &readBuf, uint size) {
+	i2c_mutex.lock();
 
 	i2c_mutex.unlock();
 }
 
-static void i2c_write(uint address, const uint8_t value) {
-	i2c_mutex.lock();
-
-	i2c_mutex.unlock();
-}
-
-void Rpi_IO::i2c_read(uint address, vector<uint8_t> &readBuf, uint size) {
-	i2c_mutex.lock();
-
-	i2c_mutex.unlock();
-}
-
-void Rpi_IO::spi_transfer(uint address, const vector<uint8_t> &writeBuf, vector<uint8_t>& readBuf) {
+void Rpi_IO::spi_transfer(uint8_t address, const vector<uint8_t> &writeBuf, vector<uint8_t>& readBuf) {
 	spi_mutex.lock();
 
 	spi_mutex.unlock();
