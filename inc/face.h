@@ -13,6 +13,7 @@
 #define MAX_TILT 100
 #define TILT_CHANNEL 6
 #define PAN_CHANNEL 7
+#define PWM_FREQ 60
 
 typedef enum {
 	RIGHT_EYE = 1,
