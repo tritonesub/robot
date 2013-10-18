@@ -8,6 +8,7 @@
 #include "robot.h"
 #include "speak.h"
 #include "envcanada.h"
+#include "face.h"
 
 using std::cout;
 using std::endl;
@@ -46,7 +47,7 @@ void Robot::init()
 	else {
 		voice.say("I am not connected to the internet.");
 	}
-
+/*
 	time_t rawtime;
 	time(&rawtime);
 
@@ -77,7 +78,13 @@ void Robot::init()
 
 		voice.say(ss.str());
 		ss.clear();
-	} 
+
+	} */
+
+	//face test
+	Face& face = Face::getInstance();
+	face.tilt(1700);
+	face.pan(1500);
 
 //	EnvCanada weather("ns-19_e");
 }

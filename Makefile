@@ -1,10 +1,10 @@
 CC=g++
-CFLAGS= -Wall -std=c++0x -c
+CFLAGS= -Wall -std=c++0x -c -g
 INC= -I/usr/include/espeak -Iinc
 TARGET = robot
 BUILD_PATH = ./build
 BIN_PATH = ./bin
-OBJ = main.o robot.o speak.o envcanada.o rpi_io.o face.o pwmrgbled.o
+OBJ = main.o robot.o speak.o envcanada.o rpi_io.o face.o color.o pca9685.o pwmrgbled.o
 OBJS = $(OBJ:%.o=$(BUILD_PATH)/%.o)
 
 .PHONY: clean 
@@ -12,7 +12,7 @@ OBJS = $(OBJ:%.o=$(BUILD_PATH)/%.o)
 all: $(TARGET) 
 
 $(TARGET): $(OBJS) 
-	$(CC) -o $(BIN_PATH)/$@ $(OBJS) -lespeak -lcurl -lbcm2835 
+	$(CC) -o $(BIN_PATH)/$@ $(OBJS) -lespeak -lcurl -lwiringPi
 
 $(BUILD_PATH)/%.o: %.cpp 
 	$(CC) $(CFLAGS) $(INC) $< -o $@

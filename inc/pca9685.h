@@ -1,7 +1,7 @@
 #ifndef PCA9685_H
 #define PCA9685_H
 
-
+#include <stdint.h>
 
 class PCA9685 {
 	//registers
@@ -10,7 +10,7 @@ private:
 	const static int _SUBADR1 = 0x02;
 	const static int _SUBADR2 = 0x03;
 	const static int _SUBADR3 = 0x04;
-	const static int _MDOE1 = 0x00;
+	const static int _MODE1 = 0x00;
 	const static int _PRESCALE = 0xFE;
 	const static int _LED0_ON_L = 0x06;
 	const static int _LED0_ON_H = 0x07;
@@ -27,13 +27,13 @@ private:
 	PCA9685();
 
 public:
-	const static uint resolution = 4096;
+	const static unsigned int RESOLUTION = 4096;
 	
-	PCA9685(int address = 0x40);
+	PCA9685(uint8_t address = 0x40);
 
 
-	setFrequency(int freq);
-	setPWM(uint channel, uint on, uint off);
+	void setFrequency(int freq);
+	void setPWM(unsigned int channel, unsigned int on, unsigned int off);
 
 };
 

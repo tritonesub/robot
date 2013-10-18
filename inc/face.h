@@ -4,11 +4,16 @@
 #include "pca9685.h"
 #include "pwmrgbled.h"
 #include "color.h"
+#include <memory>
+#include <stdint.h>
 
 #define MIN_PAN 0
 #define MAX_PAN 180
 #define MIN_TILT 15
 #define MAX_TILT 100
+#define TILT_CHANNEL 6
+#define PAN_CHANNEL 7
+#define PWM_FREQ 60
 
 typedef enum {
 	RIGHT_EYE = 1,
@@ -18,18 +23,18 @@ typedef enum {
 	CENTER_RIGHT_MOUTH = 8,
 	CENTER_MOUTH = 16,
 	CENTER_LEFT_MOUTH = 32,
-	CENTER_RIGHT_MOUTH = 64,
-	MOUTH = 124;
+	LEFT_MOUTH= 64,
+	MOUTH = 124
 } FaceLED;
 
 class Face {
 
 private:
 
-	shared_ptr<PCA9685> pwm1;
-	shared_ptr<PCA9685> pwm2;
-	shared_ptr<PCA9685> face_pwm;
-	shared_ptr<FaceLEDAddress> LEDs[7];
+	std::shared_ptr<PCA9685> pwm1;
+	std::shared_ptr<PCA9685> pwm2;
+	std::shared_ptr<PCA9685> face_pwm;
+	std::shared_ptr<PwmRgbLed> LEDs[7];
 
 	Face();
 	Face(Face const&);
@@ -45,8 +50,8 @@ public:
 
 	void setColor(const Color& color, const uint8_t LEDMask);
 
-	void tilt(uint deg);
-	pan(uint deg);
+	void tilt(unsigned int deg);
+	void pan(unsigned int deg);
 };
 
 #endif

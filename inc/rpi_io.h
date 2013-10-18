@@ -21,10 +21,6 @@ private:
 	
 	static Rpi_IO instance;
 
-	static std::mutex spi_mutex;
-	static std::mutex i2c_mutex;
-
-
 public:
 	//only reference
 	static const uint8_t PIN_07;
@@ -43,21 +39,21 @@ public:
 	static const uint8_t INPUT = 0x04;
 	static const uint8_t OUTPUT = 0x08;
 
+	static void i2c_set_address(uint8_t address);
 
+	static void i2c_write(const uint8_t reg, const uint8_t data);
+	static void i2c_write(const uint8_t reg, std::vector<uint8_t>& writeBuf);
+	static void i2c_write(const std::vector<uint8_t>& writeBuf);
+	static void i2c_write(const uint8_t value);
 
-	static void i2c_write(uint address, const std::vector<uint8_t>& writeBuf);
+	static void i2c_read(uint8_t  address, std::vector<uint8_t>& readBuf, uint size);
+	static uint8_t i2c_readU8(uint8_t address, uint8_t reg);
 
-	static void i2c_write(uint address, const uint8_t value);
-
-	static void i2c_read(uint address, std::vector<uint8_t>& readBuf, uint size);
-
-	static uint8_t i2c_read(uint address);
-
-	static void spi_transfer(uint address, const std::vector<uint8_t>& writeBuf, std::vector<uint8_t>& readBuf);
+	static void spi_transfer(uint8_t  address, const std::vector<uint8_t>& writeBuf, std::vector<uint8_t>& readBuf);
 
 	static uint8_t read(uint8_t pin);
 
-	static void write(uint8_t pin, uint8_t value);
+	static void write(uint8_t pin, const uint8_t value);
 
 	static void config_pin(uint8_t pin, uint8_t config);
 };

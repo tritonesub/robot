@@ -1,24 +1,21 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include <stdint.h>
+
 class Color {
 
 private:
-	uint _R;
-	uint _G;
-	uint _B;
 
 public:
 	Color();
-	Color(uint R, uint G, uint B);
-	virtual ~Color();	
+	Color(uint8_t R, uint8_t G, uint8_t B);
 
-	uint Red();
-	void Red(uint R);
-	uint Green();
-	void Green(uint G);
-	uint Blue();
-	void Blue(uint B);
+	static const unsigned int MAX_RGB = 255;
+
+	uint8_t Red;
+	uint8_t Green;
+	uint8_t Blue;
 
 };
 
