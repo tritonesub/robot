@@ -38,6 +38,11 @@ int Robot::run()
 //private methods
 void Robot::init() 
 {
+	//face test
+	Face& face = Face::getInstance();
+	face.tilt(1700);
+	face.pan(1550);
+
 	Speak& voice = Speak::getInstance();
 	string ip;
 	if(Robot::getIP(ip) == 0) {
@@ -47,13 +52,13 @@ void Robot::init()
 	else {
 		voice.say("I am not connected to the internet.");
 	}
-/*
-	time_t rawtime;
-	time(&rawtime);
+
+	time_t rawtime = time(NULL);
 
 	if(rawtime != -1) {
 		struct tm* timeinfo;
 		timeinfo = localtime(&rawtime);
+		cout << asctime(timeinfo) << endl;
 
 		if(timeinfo->tm_hour < 5)
 			voice.say("I can't believe you're awake!");
@@ -79,12 +84,7 @@ void Robot::init()
 		voice.say(ss.str());
 		ss.clear();
 
-	} */
-
-	//face test
-	Face& face = Face::getInstance();
-	face.tilt(1700);
-	face.pan(1500);
+	} 
 
 //	EnvCanada weather("ns-19_e");
 }

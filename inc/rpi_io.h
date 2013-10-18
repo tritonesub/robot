@@ -21,6 +21,8 @@ private:
 	
 	static Rpi_IO instance;
 
+	static int fd;
+
 public:
 	//only reference
 	static const uint8_t PIN_07;
@@ -46,8 +48,8 @@ public:
 	static void i2c_write(const std::vector<uint8_t>& writeBuf);
 	static void i2c_write(const uint8_t value);
 
-	static void i2c_read(uint8_t  address, std::vector<uint8_t>& readBuf, uint size);
-	static uint8_t i2c_readU8(uint8_t address, uint8_t reg);
+	static void i2c_read(std::vector<uint8_t>& readBuf, uint size);
+	static uint8_t i2c_readU8(uint8_t reg);
 
 	static void spi_transfer(uint8_t  address, const std::vector<uint8_t>& writeBuf, std::vector<uint8_t>& readBuf);
 
