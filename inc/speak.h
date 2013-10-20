@@ -1,8 +1,11 @@
 #ifndef SPEAK_H
 #define SPEAK_H
 
-#include "speak_lib.h"
 #include <string>
+#include <queue>
+#include <thread>
+
+#include "speak_lib.h"
 
 class Speak {
 
@@ -14,14 +17,24 @@ private:
 	void operator=(Speak const&);
 
  	int synth_flags; 
+	std::queue<std::shared_ptr<const std::string>> queue;
+
+	std::mutex mutex;
+	std::condition_variable condition;
+	std::thread t;
+
+	void worker();
+
+	static Speak instance;
 
 public:
-	void say(const std::string& phrase);
+	void say(const std::shared_ptr<const std::string>& phrase);
 
 	static Speak& getInstance() {
-		static Speak instance;
 		return instance;
 	}
+
+	static void cleanUp();
 };
 
 #endif

@@ -2,6 +2,7 @@
 #define ROBOT_H
 
 #include <string>
+#include <memory>
 
 class Robot {
 
@@ -22,7 +23,7 @@ private:
 	void init();	
 
 	//static
-	static int getIP(std::string& ip);
+	static int getIP(std::shared_ptr<std::string>& ip);
 };
 
 #endif //robot.h

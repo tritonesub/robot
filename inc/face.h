@@ -6,14 +6,16 @@
 #include "color.h"
 #include <memory>
 #include <stdint.h>
+#include <vector>
 
 #define MIN_PAN 0
 #define MAX_PAN 180
 #define MIN_TILT 15
 #define MAX_TILT 100
 #define TILT_CHANNEL 6
-#define PAN_CHANNEL 7
-#define PWM_FREQ 60
+#define PAN_CHANNEL 7 
+#define PWM_FREQ 60 
+
 
 typedef enum {
 	RIGHT_EYE = 1,
@@ -27,6 +29,10 @@ typedef enum {
 	MOUTH = 124
 } FaceLED;
 
+typedef enum {
+	RED, ORANGE, YELLOW, GREEN, TURQUOISE, LIGHT_BLUE, DARK_BLUE, PURPLE, PINK, WHITE, BLACK		
+} PaletteColor; 
+
 class Face {
 
 private:
@@ -35,6 +41,7 @@ private:
 	std::shared_ptr<PCA9685> pwm2;
 	std::shared_ptr<PCA9685> face_pwm;
 	std::shared_ptr<PwmRgbLed> LEDs[7];
+	std::vector<std::shared_ptr<Color>> palette;
 
 	Face();
 	Face(Face const&);
@@ -49,9 +56,13 @@ public:
 	}
 
 	void setColor(const Color& color, const uint8_t LEDMask);
+	void setColor(PaletteColor color, const uint8_t LEDMask);
+	void carousel(unsigned int rev, const std::vector<std::shared_ptr<Color>>& colors);
+	void carousel(unsigned int rev);
 
 	void tilt(unsigned int deg);
 	void pan(unsigned int deg);
+	void pan_tilt(unsigned int pan, unsigned int tilt);
 };
 
 #endif

@@ -32,21 +32,14 @@ void PCA9685::setFrequency(int freq) {
 	value -= 1.0;
 
 	value = floor(value + 0.5);
-	cout << "value: " << std::hex << (int)value << endl;
 	uint8_t oldmode = Rpi_IO::i2c_readU8(_MODE1);
-	cout << "oldmode: " << std::hex << (int) oldmode << endl;
 	uint8_t newmode = (oldmode & 0x7F) | 0x10;
-	cout << "newmode: " << std::hex << (int) newmode << endl;
 
-	cout << "set newmode" << endl;
 	Rpi_IO::i2c_write(static_cast<uint8_t>(_MODE1), newmode);
-	cout << "set prescale" << endl;
 	Rpi_IO::i2c_write(static_cast<uint8_t>(_PRESCALE), static_cast<uint8_t>(floor(value)));
-	cout << "set newmode" << endl;
 	Rpi_IO::i2c_write(static_cast<uint8_t>(_MODE1), oldmode);
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(5));
-	cout << "oldmode update: " << std::hex << (int)(oldmode | 0x80) << endl;
 	Rpi_IO::i2c_write(static_cast<uint8_t>(_MODE1), oldmode | 0x80);
 
 }

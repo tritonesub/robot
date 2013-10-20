@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <thread>
 #include <ifaddrs.h>
 #include <stdio.h>
 #include <netdb.h>
@@ -14,6 +15,7 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::stringstream;
+using std::shared_ptr;
 
 //private constructors
 Robot::Robot():halt(true) {
@@ -27,11 +29,13 @@ Robot::~Robot() {
 int Robot::run() 
 {
 	Speak& voice = Speak::getInstance();
-	voice.say("at your service");
+	voice.say(shared_ptr<const string>(new string("at your service")));
 	while(!halt) {
 
 	}
-	voice.say("No disassemble!");
+	voice.say(shared_ptr<const string>(new string("No disassemble!")));
+	std::this_thread::sleep_for(std::chrono::seconds(5));
+
 	return 0;
 }
 
@@ -40,56 +44,65 @@ void Robot::init()
 {
 	//face test
 	Face& face = Face::getInstance();
-	face.tilt(1700);
-	face.pan(1550);
+	face.pan_tilt(1550,1700);
 
 	Speak& voice = Speak::getInstance();
-	string ip;
+	shared_ptr<string> ip;
 	if(Robot::getIP(ip) == 0) {
-		voice.say("I am connected to the internet with the address...");
+		voice.say(shared_ptr<const string>(new const string("I am connected to the internet with the address...")));
 		voice.say(ip);
 	}
 	else {
-		voice.say("I am not connected to the internet.");
+		voice.say(shared_ptr<const string>(new const string("I am not connected to the internet.")));
 	}
 
+	face.pan(2500);
+	std::this_thread::sleep_for(std::chrono::seconds(4));
 	time_t rawtime = time(NULL);
 
 	if(rawtime != -1) {
 		struct tm* timeinfo;
 		timeinfo = localtime(&rawtime);
-		cout << asctime(timeinfo) << endl;
+		shared_ptr<const string> msg;
 
 		if(timeinfo->tm_hour < 5)
-			voice.say("I can't believe you're awake!");
+			msg = shared_ptr<const string>(new const string("I can't believe you're awake!"));
 		else if(timeinfo->tm_hour < 12)
-			voice.say("Good morning!");
+			msg = shared_ptr<const string>(new const string("Good morning!"));
 		else if(timeinfo->tm_hour < 17)
-			voice.say("Good afternoon!");
+			msg = shared_ptr<const string>(new const string("Good afternoon!"));
 		else if(timeinfo->tm_hour < 20)
-			voice.say("Good evening!");
+			msg = shared_ptr<const string>(new const string("Good evening!"));
 		else
-			voice.say("It's getting late!");
+			msg = shared_ptr<const string>(new const string("It's getting late!"));
+		
+		voice.say(msg);
 
 		stringstream ss;
 		ss << "It is " << timeinfo->tm_min << " minutes after ";
 
 		if(timeinfo->tm_hour < 12 && timeinfo->tm_hour > 0)
 			ss << timeinfo->tm_hour;
-		if(timeinfo->tm_hour > 12)
+		else if(timeinfo->tm_hour > 12)
 			ss << timeinfo->tm_hour - 12;
 		else
 			ss << " midnight";
 
-		voice.say(ss.str());
-		ss.clear();
 
+		msg = shared_ptr<const string>(new const string(ss.str()));
+
+		voice.say(msg);
+		ss.clear();
+	    face.pan(600);
+
+		std::this_thread::sleep_for(std::chrono::seconds(5));
+		face.pan_tilt(1550,900);
 	} 
 
 //	EnvCanada weather("ns-19_e");
 }
 
-int Robot::getIP(string& ip) 
+int Robot::getIP(shared_ptr<string>& ip) 
 {
 	struct ifaddrs* ifaddr;
 
@@ -111,7 +124,7 @@ int Robot::getIP(string& ip)
 			int status = getnameinfo(i->ifa_addr, sizeof(struct sockaddr_in),
 							host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
 			if(status == 0) {
-		  		ip = host;
+		  		ip = shared_ptr<string>(new string(host));
 			}
 		}
 	}
