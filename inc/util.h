@@ -3,7 +3,7 @@
 
 inline double map_range(const int value, const int fromMin, const int fromMax, const int toMin, const int toMax)
 {
-	return (value - fromMin)/(fromMax - fromMin) * (toMax - toMin) + toMin;
+	return (static_cast<float>(value) - fromMin)/(fromMax - fromMin) * (toMax - toMin) + toMin;
 }
 
 #endif

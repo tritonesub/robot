@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS= -Wall -std=c++0x -c -g
+CFLAGS= -Wall -std=c++0x -c -g 
 INC= -I/usr/include/espeak -Iinc
 TARGET = robot
 BUILD_PATH = ./build

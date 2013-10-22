@@ -41,7 +41,7 @@ private:
 	std::shared_ptr<PCA9685> pwm2;
 	std::shared_ptr<PCA9685> face_pwm;
 	std::shared_ptr<PwmRgbLed> LEDs[7];
-	std::vector<std::shared_ptr<Color>> palette;
+	std::vector<Color> palette;
 
 	Face();
 	Face(Face const&);
@@ -57,12 +57,11 @@ public:
 
 	void setColor(const Color& color, const uint8_t LEDMask);
 	void setColor(PaletteColor color, const uint8_t LEDMask);
-	void carousel(unsigned int rev, const std::vector<std::shared_ptr<Color>>& colors);
+	void carousel(unsigned int rev, const std::vector<Color>& colors);
 	void carousel(unsigned int rev);
 
 	void tilt(unsigned int deg);
 	void pan(unsigned int deg);
-	void pan_tilt(unsigned int pan, unsigned int tilt);
 };
 
 #endif

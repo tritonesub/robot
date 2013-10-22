@@ -44,7 +44,11 @@ void Robot::init()
 {
 	//face test
 	Face& face = Face::getInstance();
-	face.pan_tilt(1550,1700);
+	face.tilt(1700);
+	std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	face.pan(1550);
+	face.setColor(DARK_BLUE, EYES);
+	face.setColor(PINK, MOUTH);
 
 	Speak& voice = Speak::getInstance();
 	shared_ptr<string> ip;
@@ -56,7 +60,15 @@ void Robot::init()
 		voice.say(shared_ptr<const string>(new const string("I am not connected to the internet.")));
 	}
 
+	face.setColor(DARK_BLUE,RIGHT_EYE);
+	face.setColor(ORANGE,LEFT_EYE);
+	face.setColor(YELLOW,RIGHT_MOUTH);
+	face.setColor(GREEN,CENTER_RIGHT_MOUTH);
+	face.setColor(TURQUOISE,CENTER_MOUTH);
+	face.setColor(PURPLE,CENTER_LEFT_MOUTH);
+	face.setColor(PINK,LEFT_MOUTH);
 	face.pan(2500);
+
 	std::this_thread::sleep_for(std::chrono::seconds(4));
 	time_t rawtime = time(NULL);
 
@@ -96,7 +108,11 @@ void Robot::init()
 	    face.pan(600);
 
 		std::this_thread::sleep_for(std::chrono::seconds(5));
-		face.pan_tilt(1550,900);
+		face.pan(1550);
+
+		std::this_thread::sleep_for(std::chrono::seconds(10));
+		face.tilt(1100);
+		face.tilt(900);
 	} 
 
 //	EnvCanada weather("ns-19_e");

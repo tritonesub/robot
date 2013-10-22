@@ -1,6 +1,10 @@
 #include "rpi_io.h"
-#include <wiringPi.h>
-#include <wiringPiI2C.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <linux/i2c-dev.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <algorithm>
 #include <vector>
 #include <mutex>
 
@@ -15,7 +19,10 @@ Rpi_IO Rpi_IO::instance = Rpi_IO();
 
 //private Rpi_IO constructor (singleton)
 Rpi_IO::Rpi_IO() {
-	wiringPiSetup();
+	
+	//need to check for actual board version for re-usability
+	//hard code to version 2
+	fd = open("/dev/i2c-1", O_RDWR);
 
 	//initialize pin vars based on raspberry pi version
 	//todo: these are currently set for v2.0
@@ -32,34 +39,55 @@ Rpi_IO::Rpi_IO() {
 	const uint8_t PIN_22 = 25;
 }
 
-Rpi_IO::~Rpi_IO() {
+Rpi_IO::~Rpi_IO() 
+{
+	close(fd);
 }
 
 
 //public static methods
-void Rpi_IO::i2c_set_address(uint8_t address)
+
+int Rpi_IO::i2c_write(const int address, const int reg, int data)
 {
-    fd = wiringPiI2CSetup(address);
+	std::lock_guard<std::mutex> lock(i2c_mutex);
+
+	if(ioctl(fd, I2C_SLAVE, address) < 0)
+		return -1;
+
+	return i2c_smbus_write_byte_data(fd, reg, address);
 }
 
-void Rpi_IO::i2c_write(const uint8_t reg, uint8_t data)
+int Rpi_IO::i2c_write(const int address, vector<std::pair<int,int>> data)
 {
-	wiringPiI2CWriteReg8(fd, reg, data);
+	std::lock_guard<std::mutex> lock(i2c_mutex);
+	
+	if(ioctl(fd, I2C_SLAVE, address) < 0)
+		return -1;
+
+	for_each(data.begin(), data.end(), [](std::pair<int,int> val) {
+		i2c_smbus_write_byte_data(fd, std::get<0>(val), std::get<1>(val));
+	});
+
+	return 0; 
 }
 
-void Rpi_IO::i2c_write(const uint8_t reg, std::vector<uint8_t>& writeBuf)
+int Rpi_IO::i2c_io_callback(const int address, std::function<int (int)> callback)
 {
+	std::lock_guard<std::mutex> lock(i2c_mutex);
+
+	if(ioctl(fd, I2C_SLAVE, address) < 0)
+		return -1;
+
+ 	return callback(fd);
 }
 
-void Rpi_IO::i2c_write(const vector<uint8_t> &writeBuf) {
-}
 
-void Rpi_IO::i2c_write(const uint8_t value) {
-}
+int Rpi_IO::i2c_read8(const int address, const int reg) {
+	std::lock_guard<std::mutex> lock(i2c_mutex);
 
-uint8_t Rpi_IO::i2c_readU8(uint8_t reg) {
-	int data = wiringPiI2CReadReg8(fd, reg);
-	return data;
+	if(ioctl(fd, I2C_SLAVE, address) < 0)
+		return -1;
+	return i2c_smbus_read_byte_data(fd, reg);
 }
 
 void Rpi_IO::spi_transfer(uint8_t address, const vector<uint8_t> &writeBuf, vector<uint8_t>& readBuf) {

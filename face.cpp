@@ -16,26 +16,26 @@ Face::Face()
 	pwm2 = shared_ptr<PCA9685>(new PCA9685(0x41));
 	pwm2->setFrequency(PWM_FREQ);
 
-	LEDs[0] = shared_ptr<PwmRgbLed>(new PwmRgbLed(pwm2, 1, 2, 3)); //right eye
-	LEDs[1] = shared_ptr<PwmRgbLed>(new PwmRgbLed(pwm2, 4, 5, 6)); //left eye
-	LEDs[2] = shared_ptr<PwmRgbLed>(new PwmRgbLed(pwm1, 1, 2, 3)); //right mouth
-	LEDs[3] = shared_ptr<PwmRgbLed>(new PwmRgbLed(pwm1, 4, 5, 6));
-	LEDs[4] = shared_ptr<PwmRgbLed>(new PwmRgbLed(pwm1, 7, 8, 9)); //center mouth
-	LEDs[5] = shared_ptr<PwmRgbLed>(new PwmRgbLed(pwm1, 10, 11, 12));
-	LEDs[6] = shared_ptr<PwmRgbLed>(new PwmRgbLed(pwm1, 13, 14, 15)); //left mouth
+	LEDs[0] = shared_ptr<PwmRgbLed>(new PwmRgbLed(pwm2, 0, 1, 2)); //right eye
+	LEDs[1] = shared_ptr<PwmRgbLed>(new PwmRgbLed(pwm2, 3, 4, 5)); //left eye
+	LEDs[2] = shared_ptr<PwmRgbLed>(new PwmRgbLed(pwm1, 0, 1, 2)); //right mouth
+	LEDs[3] = shared_ptr<PwmRgbLed>(new PwmRgbLed(pwm1, 3, 4, 5));
+	LEDs[4] = shared_ptr<PwmRgbLed>(new PwmRgbLed(pwm1, 6, 7, 8)); //center mouth
+	LEDs[5] = shared_ptr<PwmRgbLed>(new PwmRgbLed(pwm1, 9, 10, 11));
+	LEDs[6] = shared_ptr<PwmRgbLed>(new PwmRgbLed(pwm1, 12, 13, 14)); //left mouth
 
-	palette[PaletteColor::RED] = shared_ptr<Color>(new Color(150,0,0));
-	palette[PaletteColor::ORANGE] = shared_ptr<Color>(new Color(200,10,0));
-	palette[PaletteColor::YELLOW] = shared_ptr<Color>(new Color(150,45,0));
-	palette[PaletteColor::GREEN] = shared_ptr<Color>(new Color(0,100,0));
-	palette[PaletteColor::TURQUOISE] = shared_ptr<Color>(new Color(5,92,110));
-	palette[PaletteColor::LIGHT_BLUE] = shared_ptr<Color>(new Color(20,50,130));
-	palette[PaletteColor::DARK_BLUE] = shared_ptr<Color>(new Color(0,0,120));
-	palette[PaletteColor::PURPLE] = shared_ptr<Color>(new Color(20,0,60));
-	palette[PaletteColor::PINK] = shared_ptr<Color>(new Color(100,0,20));
-	palette[PaletteColor::WHITE] = shared_ptr<Color>(new Color(50,30,50));
-	palette[PaletteColor::BLACK] = shared_ptr<Color>(new Color(0,0,0));
-
+	palette = vector<Color>();
+	palette.push_back(Color(150,0,0));
+	palette.push_back(Color(200,10,0));
+	palette.push_back(Color(150,45,0));
+	palette.push_back(Color(0,100,0));
+	palette.push_back(Color(5,92,110));
+	palette.push_back(Color(20,50,130));
+	palette.push_back(Color(0,0,120));
+	palette.push_back(Color(20,0,60));
+	palette.push_back(Color(100,0,20));
+	palette.push_back(Color(50,30,50));
+	palette.push_back(Color(1,1,1));
 }
 
 Face::~Face()
@@ -46,7 +46,7 @@ Face::~Face()
 void Face::setColor(const Color& color, const uint8_t LEDMask) 
 {
 
-	for(int i; i<7; i++) {
+	for(int i=0; i<7; i++) {
 		if((LEDMask >> i) & 0x01) {
 			LEDs[i]->setColor(color);	
 		}
@@ -55,14 +55,14 @@ void Face::setColor(const Color& color, const uint8_t LEDMask)
 
 void Face::setColor(PaletteColor color, const uint8_t LEDMask) 
 {
-	setColor(*(palette.at(color)), LEDMask);
+	setColor(palette.at(color), LEDMask);
 }
 
-void Face::carousel(unsigned int rev, const vector<shared_ptr<Color>>& colors)
+void Face::carousel(unsigned int rev, const vector<Color>& colors)
 {
 	for(unsigned int i=0; i<rev; i++) {
 		for(unsigned int j=0; j<colors.size(); j++) {
-		
+
 		}
 	}
 }
@@ -88,9 +88,3 @@ void Face::pan(unsigned int deg)
 //	}
 }
 
-void Face::pan_tilt(unsigned int pan, unsigned int tilt)
-{
-	this->pan(pan);
-	std::this_thread::sleep_for(std::chrono::milliseconds(500));
-	this->tilt(tilt);
-}

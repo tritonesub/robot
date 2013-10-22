@@ -19,8 +19,8 @@ PwmRgbLed::~PwmRgbLed() {}
 
 void PwmRgbLed::setColor(const Color& color) 
 {
-	pwm->setPWM(redChannel, 0, floor(map_range(color.Red, 0, Color::MAX_RGB, 0, PCA9685::RESOLUTION)));
-	pwm->setPWM(greenChannel, 0, floor(map_range(color.Green, 0, Color::MAX_RGB, 0, PCA9685::RESOLUTION)));
-	pwm->setPWM(blueChannel, 0, floor(map_range(color.Blue, 0, Color::MAX_RGB, 0, PCA9685::RESOLUTION)));
+	pwm->setPWM(redChannel, 0, PCA9685::RESOLUTION - ceil(map_range(color.Red, 0, Color::MAX_RGB, 0, PCA9685::RESOLUTION)));
+	pwm->setPWM(greenChannel, 0, PCA9685::RESOLUTION - ceil(map_range(color.Green, 0, Color::MAX_RGB, 0, PCA9685::RESOLUTION)));
+	pwm->setPWM(blueChannel, 0, PCA9685::RESOLUTION - ceil(map_range(color.Blue, 0, Color::MAX_RGB, 0, PCA9685::RESOLUTION)));
 }
 

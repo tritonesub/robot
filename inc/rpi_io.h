@@ -2,6 +2,8 @@
 #define RPI_IO_H
 #include <vector>
 #include <mutex>
+#include <functional>
+#include <utility>
 
 typedef enum {
 	PULLUP = 0x01,
@@ -41,15 +43,12 @@ public:
 	static const uint8_t INPUT = 0x04;
 	static const uint8_t OUTPUT = 0x08;
 
-	static void i2c_set_address(uint8_t address);
+	static int i2c_write(const int address, const int reg, const int data);
+	static int i2c_write(const int address, std::vector<std::pair<int, int>> data);
 
-	static void i2c_write(const uint8_t reg, const uint8_t data);
-	static void i2c_write(const uint8_t reg, std::vector<uint8_t>& writeBuf);
-	static void i2c_write(const std::vector<uint8_t>& writeBuf);
-	static void i2c_write(const uint8_t value);
+	static int i2c_io_callback(const int address, std::function<int(int)> callback);
 
-	static void i2c_read(std::vector<uint8_t>& readBuf, uint size);
-	static uint8_t i2c_readU8(uint8_t reg);
+	static int i2c_read8(const int address, const int reg);
 
 	static void spi_transfer(uint8_t  address, const std::vector<uint8_t>& writeBuf, std::vector<uint8_t>& readBuf);
 

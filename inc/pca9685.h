@@ -23,11 +23,12 @@ private:
 
 	int address;
 	int frequency;
+	int i2c_fd;
 
 	PCA9685();
 
 public:
-	const static unsigned int RESOLUTION = 4096;
+	const static unsigned int RESOLUTION = 4095;
 	
 	PCA9685(uint8_t address = 0x40);
 

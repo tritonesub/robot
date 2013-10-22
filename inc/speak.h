@@ -24,6 +24,7 @@ private:
 	std::thread t;
 
 	void worker();
+	bool doWork;
 
 	static Speak instance;
 

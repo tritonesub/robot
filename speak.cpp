@@ -26,11 +26,14 @@ Speak::Speak() :
 	espeak_SetParameter(espeakRANGE,50,0);
 	espeak_SetParameter(espeakPITCH,30,0);
 
+	doWork = true;
 	t = std::thread(&Speak::worker, this);
 }
 
 Speak::~Speak() 
 {
+	doWork = false;
+	condition.notify_all();
 	espeak_Terminate();
 }
 
@@ -44,13 +47,15 @@ void Speak::say(const shared_ptr<const string>& phrase)
 
 void Speak::worker() 
 {
-	while(true) {
+	while(doWork) {
 		std::unique_lock<std::mutex> lock(mutex);
-		condition.wait(lock, [&queue]() { return !queue.empty(); });
-		espeak_Synth(queue.front()->c_str(), queue.front()->length() + 1, 0, POS_CHARACTER, 0, 
-			synth_flags, NULL, NULL);
-		espeak_Synchronize();
-		queue.pop();
+		condition.wait(lock);
+		while(!queue.empty()) {
+			espeak_Synth(queue.front()->c_str(), queue.front()->length() + 1, 0, POS_CHARACTER, 0, 
+				synth_flags, NULL, NULL);
+			espeak_Synchronize();
+			queue.pop();
+		}
 	}
 }
 
