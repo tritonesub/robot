@@ -12,7 +12,7 @@ OBJS = $(OBJ:%.o=$(BUILD_PATH)/%.o)
 all: $(TARGET) 
 
 $(TARGET): $(OBJS) 
-	$(CC) -o $(BIN_PATH)/$@ $(OBJS) -lespeak -lcurl -lwiringPi
+	$(CC) -o $(BIN_PATH)/$@ $(OBJS) -lespeak -lcurl
 
 $(BUILD_PATH)/%.o: %.cpp 
 	$(CC) $(CFLAGS) $(INC) $< -o $@
