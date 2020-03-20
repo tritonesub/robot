@@ -18,7 +18,7 @@ using std::stringstream;
 using std::shared_ptr;
 
 //private constructors
-Robot::Robot():halt(true) {
+Robot::Robot():halt(false) {
 	init();
 }
 
@@ -30,9 +30,17 @@ int Robot::run()
 {
 	Speak& voice = Speak::getInstance();
 	voice.say(shared_ptr<const string>(new string("at your service")));
+	
 	while(!halt) {
+		face.pan(1000);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+		face.pan(2000);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 
+		face.pan(1550);
+		std::this_thread::sleep_fo(std::chrono::minutes(60));
 	}
+	
 	voice.say(shared_ptr<const string>(new string("No disassemble!")));
 	std::this_thread::sleep_for(std::chrono::seconds(5));
 
