@@ -38,6 +38,7 @@ int Robot::run()
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 
 		face.pan(1550);
+		Robot::speakTime();
 		std::this_thread::sleep_fo(std::chrono::minutes(60));
 	}
 	
