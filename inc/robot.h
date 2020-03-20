@@ -24,6 +24,7 @@ private:
 
 	//static
 	static int getIP(std::shared_ptr<std::string>& ip);
+	static int speakTime();
 };
 
 #endif //robot.h

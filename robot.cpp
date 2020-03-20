@@ -78,6 +78,22 @@ void Robot::init()
 	face.pan(2500);
 
 	std::this_thread::sleep_for(std::chrono::seconds(4));
+    face.pan(600);
+
+	std::this_thread::sleep_for(std::chrono::seconds(5));
+	face.pan(1550);
+
+	std::this_thread::sleep_for(std::chrono::seconds(10));
+	face.tilt(1100);
+	face.tilt(900);
+	 
+
+//	EnvCanada weather("ns-19_e");
+}
+
+int Robot::speakTime() 
+{
+	Speak& voice = Speak::getInstance();
 	time_t rawtime = time(NULL);
 
 	if(rawtime != -1) {
@@ -113,17 +129,6 @@ void Robot::init()
 
 		voice.say(msg);
 		ss.clear();
-	    face.pan(600);
-
-		std::this_thread::sleep_for(std::chrono::seconds(5));
-		face.pan(1550);
-
-		std::this_thread::sleep_for(std::chrono::seconds(10));
-		face.tilt(1100);
-		face.tilt(900);
-	} 
-
-//	EnvCanada weather("ns-19_e");
 }
 
 int Robot::getIP(shared_ptr<string>& ip) 
