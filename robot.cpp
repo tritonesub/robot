@@ -29,7 +29,12 @@ Robot::~Robot() {
 int Robot::run() 
 {
 	Speak& voice = Speak::getInstance();
+	Face& face = Face::getInstance();
 	voice.say(shared_ptr<const string>(new string("at your service")));
+
+	time_t rawtime;
+	int minutes = 60;
+	struct tm* timeinfo = NULL;
 	
 	while(!halt) {
 		face.pan(1000);
@@ -37,9 +42,15 @@ int Robot::run()
 		face.pan(2000);
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 
+		rawtime = time(NULL);
+		minutes = 60;
+		if(rawtime != -1) {
+			timeinfo = localtime(&rawtime);
+			minutes -= timeinfo->tm_min;
+		}
 		face.pan(1550);
 		Robot::speakTime();
-		std::this_thread::sleep_fo(std::chrono::minutes(60));
+		std::this_thread::sleep_for(std::chrono::minutes(minutes));
 	}
 	
 	voice.say(shared_ptr<const string>(new string("No disassemble!")));
@@ -56,18 +67,6 @@ void Robot::init()
 	face.tilt(1700);
 	std::this_thread::sleep_for(std::chrono::milliseconds(500));
 	face.pan(1550);
-	face.setColor(DARK_BLUE, EYES);
-	face.setColor(PINK, MOUTH);
-
-	Speak& voice = Speak::getInstance();
-	shared_ptr<string> ip;
-	if(Robot::getIP(ip) == 0) {
-		voice.say(shared_ptr<const string>(new const string("I am connected to the internet with the address...")));
-		voice.say(ip);
-	}
-	else {
-		voice.say(shared_ptr<const string>(new const string("I am not connected to the internet.")));
-	}
 
 	face.setColor(DARK_BLUE,RIGHT_EYE);
 	face.setColor(ORANGE,LEFT_EYE);
@@ -81,18 +80,27 @@ void Robot::init()
 	std::this_thread::sleep_for(std::chrono::seconds(4));
     face.pan(600);
 
-	std::this_thread::sleep_for(std::chrono::seconds(5));
+	std::this_thread::sleep_for(std::chrono::seconds(2));
 	face.pan(1550);
 
-	std::this_thread::sleep_for(std::chrono::seconds(10));
-	face.tilt(1100);
-	face.tilt(900);
-	 
+	std::this_thread::sleep_for(std::chrono::seconds(2));
+	face.setColor(DARK_BLUE, EYES);
+	face.setColor(PINK, MOUTH);
+
+	Speak& voice = Speak::getInstance();
+	shared_ptr<string> ip;
+	if(Robot::getIP(ip) == 0) {
+		voice.say(shared_ptr<const string>(new const string("I am connected to the internet with the address...")));
+		voice.say(ip);
+	}
+	else {
+		voice.say(shared_ptr<const string>(new const string("I am not connected to the internet.")));
+	}
 
 //	EnvCanada weather("ns-19_e");
 }
 
-int Robot::speakTime() 
+void Robot::speakTime() 
 {
 	Speak& voice = Speak::getInstance();
 	time_t rawtime = time(NULL);
@@ -101,35 +109,44 @@ int Robot::speakTime()
 		struct tm* timeinfo;
 		timeinfo = localtime(&rawtime);
 		shared_ptr<const string> msg;
+		shared_ptr<const string> msg2;
 
-		if(timeinfo->tm_hour < 5)
+		if(timeinfo->tm_hour < 6)
 			msg = shared_ptr<const string>(new const string("I can't believe you're awake!"));
 		else if(timeinfo->tm_hour < 12)
 			msg = shared_ptr<const string>(new const string("Good morning!"));
 		else if(timeinfo->tm_hour < 17)
 			msg = shared_ptr<const string>(new const string("Good afternoon!"));
-		else if(timeinfo->tm_hour < 20)
+		else if(timeinfo->tm_hour < 22)
 			msg = shared_ptr<const string>(new const string("Good evening!"));
 		else
 			msg = shared_ptr<const string>(new const string("It's getting late!"));
 		
 		voice.say(msg);
-
 		stringstream ss;
-		ss << "It is " << timeinfo->tm_min << " minutes after ";
+		if(timeinfo->tm_min == 0) {
+			ss << "It is " << timeinfo->tm_hour << " o\'clock";
+		}
+		else {
+			ss << "It is " << timeinfo->tm_min << " minutes after ";
+		}
 
-		if(timeinfo->tm_hour < 12 && timeinfo->tm_hour > 0)
+		if(timeinfo->tm_hour <= 12 && timeinfo->tm_hour > 0) {
 			ss << timeinfo->tm_hour;
-		else if(timeinfo->tm_hour > 12)
+		}
+		else if(timeinfo->tm_hour > 12) {
 			ss << timeinfo->tm_hour - 12;
-		else
+		}
+		else {
 			ss << " midnight";
+		}
 
+		msg2 = shared_ptr<const string>(new const string(ss.str()));
 
-		msg = shared_ptr<const string>(new const string(ss.str()));
-
-		voice.say(msg);
+		voice.say(msg2);
 		ss.clear();
+	}
+	return;
 }
 
 int Robot::getIP(shared_ptr<string>& ip) 
