@@ -1,12 +1,14 @@
 #include "rpi_io.h"
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#include <linux/i2c-dev.h>
+//#include <linux/i2c-dev.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <algorithm>
 #include <vector>
 #include <mutex>
+#include <unistd.h>
+#include "i2c-dev.h"
 
 using std::vector;
 

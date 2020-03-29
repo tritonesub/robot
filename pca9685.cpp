@@ -1,7 +1,8 @@
 #include "pca9685.h"
 #include "rpi_io.h"
+#include "i2c-dev.h"
 #include <math.h>
-#include <linux/i2c-dev.h>
+//#include <linux/i2c-dev.h>
 #include <chrono>
 #include <thread>
 #include <vector>

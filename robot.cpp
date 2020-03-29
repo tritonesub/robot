@@ -78,7 +78,7 @@ void Robot::init()
 	face.pan(2500);
 
 	std::this_thread::sleep_for(std::chrono::seconds(4));
-    face.pan(600);
+	face.pan(600);
 
 	std::this_thread::sleep_for(std::chrono::seconds(2));
 	face.pan(1550);
@@ -125,20 +125,27 @@ void Robot::speakTime()
 		voice.say(msg);
 		stringstream ss;
 		if(timeinfo->tm_min == 0) {
-			ss << "It is " << timeinfo->tm_hour << " o\'clock";
+			ss << "It is ";
+
+			if(timeinfo->tm_hour == 0) {
+				ss << " midnight!"; 
+			}
+			else {
+				ss << "It is " << timeinfo->tm_hour << " o\'clock";
+			}
 		}
 		else {
 			ss << "It is " << timeinfo->tm_min << " minutes after ";
-		}
 
-		if(timeinfo->tm_hour <= 12 && timeinfo->tm_hour > 0) {
-			ss << timeinfo->tm_hour;
-		}
-		else if(timeinfo->tm_hour > 12) {
-			ss << timeinfo->tm_hour - 12;
-		}
-		else {
-			ss << " midnight";
+			if(timeinfo->tm_hour <= 12 && timeinfo->tm_hour > 0) {
+				ss << timeinfo->tm_hour;
+			}
+			else if(timeinfo->tm_hour > 12) {
+				ss << timeinfo->tm_hour - 12;
+			}
+			else {
+				ss << " midnight";
+			}
 		}
 
 		msg2 = shared_ptr<const string>(new const string(ss.str()));

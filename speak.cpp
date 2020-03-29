@@ -1,6 +1,6 @@
 #include "speak.h"
 #include <iostream>
-
+#include <speak_lib.h>
 using std::cout;
 using std::endl;
 
@@ -17,6 +17,7 @@ Speak::Speak() :
 {
 
 	const char *voicename = "english";
+
 	espeak_Initialize(AUDIO_OUTPUT_PLAYBACK, 0, NULL, 0);
 
 	espeak_SetVoiceByName(voicename);
@@ -25,7 +26,7 @@ Speak::Speak() :
 	espeak_SetParameter(espeakVOLUME,100,0);
 	espeak_SetParameter(espeakRANGE,50,0);
 	espeak_SetParameter(espeakPITCH,30,0);
-
+	
 	doWork = true;
 	t = std::thread(&Speak::worker, this);
 }
