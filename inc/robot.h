@@ -3,8 +3,10 @@
 
 #include <string>
 #include <memory>
+#include "ServerHandler.h"
+#include "server.h"
 
-class Robot {
+class Robot:public ServerHandler {
 
 public:
 
@@ -18,9 +20,12 @@ public:
 private:
 	
 	bool halt;
+	Server server;
 
 	//methods
 	void init();	
+	void handleRequest(std::string const &req, std::string &resp) override;
+
 
 	//static
 	static int getIP(std::shared_ptr<std::string>& ip);

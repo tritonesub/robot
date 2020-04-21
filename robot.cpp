@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <thread>
+#include <string>
 #include <ifaddrs.h>
 #include <stdio.h>
 #include <netdb.h>
@@ -10,6 +11,7 @@
 #include "speak.h"
 #include "envcanada.h"
 #include "face.h"
+#include "server.h"
 
 using std::cout;
 using std::endl;
@@ -18,7 +20,7 @@ using std::stringstream;
 using std::shared_ptr;
 
 //private constructors
-Robot::Robot():halt(false) {
+Robot::Robot() : halt(false), server(*this, 8080) {
 	init();
 }
 
@@ -42,6 +44,8 @@ int Robot::run()
 		face.pan(2000);
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 
+		Robot::speakTime();
+		
 		rawtime = time(NULL);
 		minutes = 60;
 		if(rawtime != -1) {
@@ -49,7 +53,6 @@ int Robot::run()
 			minutes -= timeinfo->tm_min;
 		}
 		face.pan(1550);
-		Robot::speakTime();
 		std::this_thread::sleep_for(std::chrono::minutes(minutes));
 	}
 	
@@ -97,7 +100,15 @@ void Robot::init()
 		voice.say(shared_ptr<const string>(new const string("I am not connected to the internet.")));
 	}
 
+
+
+
 //	EnvCanada weather("ns-19_e");
+}
+
+void Robot::handleRequest(string const &req, string &resp) 
+{
+	resp = "got it";
 }
 
 void Robot::speakTime() 
@@ -124,28 +135,26 @@ void Robot::speakTime()
 		
 		voice.say(msg);
 		stringstream ss;
-		if(timeinfo->tm_min == 0) {
-			ss << "It is ";
+		string time;
 
-			if(timeinfo->tm_hour == 0) {
-				ss << " midnight!"; 
-			}
-			else {
-				ss << "It is " << timeinfo->tm_hour << " o\'clock";
+		ss << "It is ";
+		if(timeinfo->tm_hour > 12) {
+			time = std::to_string(timeinfo->tm_hour - 12); 
+		}
+		else if (timeinfo->tm_hour == 0){
+			time = "midnight";
+		}
+		else {
+			time = std::to_string(timeinfo->tm_hour);
+		}
+		if(timeinfo->tm_min == 0) {
+			ss << time;
+			if(timeinfo->tm_hour != 0) {
+				ss << " o\' clock"; 
 			}
 		}
 		else {
-			ss << "It is " << timeinfo->tm_min << " minutes after ";
-
-			if(timeinfo->tm_hour <= 12 && timeinfo->tm_hour > 0) {
-				ss << timeinfo->tm_hour;
-			}
-			else if(timeinfo->tm_hour > 12) {
-				ss << timeinfo->tm_hour - 12;
-			}
-			else {
-				ss << " midnight";
-			}
+			ss << timeinfo->tm_min << " minutes after " << time;
 		}
 
 		msg2 = shared_ptr<const string>(new const string(ss.str()));

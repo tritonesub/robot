@@ -48,6 +48,7 @@ private:
 	void operator=(Face const&);
 	~Face();
 
+
 public:
 	
 	static Face& getInstance() {

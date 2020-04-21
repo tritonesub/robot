@@ -48,8 +48,9 @@ void Speak::say(const shared_ptr<const string>& phrase)
 
 void Speak::worker() 
 {
+	std::unique_lock<std::mutex> lock(mutex);
+	
 	while(doWork) {
-		std::unique_lock<std::mutex> lock(mutex);
 		condition.wait(lock);
 		while(!queue.empty()) {
 			espeak_Synth(queue.front()->c_str(), queue.front()->length() + 1, 0, POS_CHARACTER, 0, 
